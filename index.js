@@ -5,7 +5,7 @@ const app = express();
 app.get("/", (req, res) => res.send("Bot MC 24/7 działa ✅"));
 app.listen(3000);
 
-const HOST = "deserowl.aternos.host";  // dynamiczny host Aternos
+const HOST = "anarchiaspongebob.aternos.me";  // dynamiczny host Aternos
 const PORT = 32014;
 const USERNAME = "AFK_BOT_24_7";
 const PASSWORD = "bot12345";         // AuthMe
