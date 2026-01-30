@@ -6,16 +6,16 @@ app.get("/", (req, res) => res.send("Bot MC 24/7 działa ✅"));
 app.listen(3000);
 
 // ====== USTAWIENIA SERWERA ======
-const HOST = "bocker.aternos.host";
+const HOST = "quebrachocrestedtinamou.aternos.host";   // dynamiczny host Aternos
 const PORT = 32014;
-const USERNAME = "AFK_BOT_24_7";
-const PASSWORD = "bot12345";        // 🔴 ZMIEŃ NA SWOJE
+const USERNAME = "AFK_BOT_24_7";     // Twój nick bota
+const PASSWORD = "bot12345";          // 🔴 Zmień na swoje hasło AuthMe
 const MC_VERSION = "1.20.6";
 
 // opóźnienia (Aternos-friendly)
-const LOGIN_DELAY = 3500;            // ms
-const RECONNECT_DELAY = 10000;       // ms
-const AFK_INTERVAL = 25000;          // ms
+const LOGIN_DELAY = 3500;            // ms przed logowaniem AuthMe
+const RECONNECT_DELAY = 10000;       // ms po rozłączeniu
+const AFK_INTERVAL = 25000;          // ms skakanie co X
 
 let bot;
 let afkInterval;
@@ -34,7 +34,7 @@ function startBot() {
   bot.once("spawn", () => {
     console.log("✅ Bot wszedł na serwer");
 
-    // AUTO LOGIN (AuthMe)
+    // AUTO LOGIN AuthMe
     setTimeout(() => {
       bot.chat(`/login ${PASSWORD}`);
     }, LOGIN_DELAY);
@@ -55,19 +55,18 @@ function startBot() {
     }
   });
 
-  // ROZŁĄCZENIE / KICK / ECONNRESET
+  // ROZŁĄCZENIE / KICK / ECONNRESET / TIMEOUT
   bot.on("end", () => {
     console.log(`🔄 Rozłączono – reconnect za ${RECONNECT_DELAY / 1000}s`);
-
     if (afkInterval) clearInterval(afkInterval);
-
     setTimeout(startBot, RECONNECT_DELAY);
   });
 
   bot.on("error", (err) => {
     console.log("⚠️ Error:", err?.message || err);
-    // nie crashujemy bota
+    // bot nie crashuje, tylko loguje
   });
 }
 
+// START BOTA
 startBot();
