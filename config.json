@@ -1,0 +1,10 @@
+{
+  "host": "bocker.aternos.host",
+  "port": 32014,
+  "username": "AFK_BOT_247",
+  "password": "haslo123",
+  "version": "1.20.4",
+  "loginDelay": 4000,
+  "reconnectDelay": 15000,
+  "afkInterval": 30000
+}
