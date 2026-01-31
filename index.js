@@ -1,62 +1,61 @@
 const mineflayer = require("mineflayer");
 const express = require("express");
+const fs = require("fs");
 
+// KEEP ALIVE
 const app = express();
-app.get("/", (req, res) => res.send("Bot MC 24/7 działa ✅"));
+app.get("/", (req, res) => res.send("AFK Bot działa ✅"));
 app.listen(3000);
 
-const HOST = "anarchiaspongebob.aternos.me";  // dynamiczny host Aternos
-const PORT = 32014;
-const USERNAME = "AFK_BOT_24_7";
-const PASSWORD = "bot12345";         // AuthMe
-const MC_VERSION = "1.20.6";
-
-const LOGIN_DELAY = 3500;
-const RECONNECT_DELAY = 10000;
-const AFK_INTERVAL = 25000;
+// LOAD CONFIG
+const config = JSON.parse(fs.readFileSync("./config.json"));
 
 let bot;
-let afkInterval;
+let afkTask;
 
 function startBot() {
-  console.log("🚀 Próba połączenia z serwerem...");
+  console.log("🚀 Łączenie z serwerem...");
 
   bot = mineflayer.createBot({
-    host: HOST,
-    port: PORT,
-    username: USERNAME,
-    version: MC_VERSION,
+    host: config.host,
+    port: config.port,
+    username: config.username,
+    version: config.version,
     auth: "offline"
   });
 
   bot.once("spawn", () => {
     console.log("✅ Bot wszedł na serwer");
 
+    // LOGIN AUTHME
     setTimeout(() => {
-      bot.chat(`/login ${PASSWORD}`);
-    }, LOGIN_DELAY);
+      bot.chat(`/login ${config.password}`);
+    }, config.loginDelay);
 
-    afkInterval = setInterval(() => {
+    // ANTI-AFK
+    afkTask = setInterval(() => {
       bot.setControlState("jump", true);
-      setTimeout(() => bot.setControlState("jump", false), 400);
-    }, AFK_INTERVAL);
+      setTimeout(() => bot.setControlState("jump", false), 300);
+    }, config.afkInterval);
   });
 
+  // AUTO REGISTER
   bot.on("messagestr", (msg) => {
-    if (msg.toLowerCase().includes("register")) {
-      console.log("📝 Rejestracja AuthMe...");
-      bot.chat(`/register ${PASSWORD} ${PASSWORD}`);
+    const m = msg.toLowerCase();
+    if (m.includes("register")) {
+      bot.chat(`/register ${config.password} ${config.password}`);
     }
   });
 
+  // RECONNECT
   bot.on("end", () => {
-    console.log(`🔄 Rozłączono – reconnect za ${RECONNECT_DELAY / 1000}s`);
-    if (afkInterval) clearInterval(afkInterval);
-    setTimeout(startBot, RECONNECT_DELAY);
+    console.log(`🔄 Rozłączono – reconnect za ${config.reconnectDelay / 1000}s`);
+    if (afkTask) clearInterval(afkTask);
+    setTimeout(startBot, config.reconnectDelay);
   });
 
   bot.on("error", (err) => {
-    console.log("⚠️ Error:", err?.message || err);
+    console.log("⚠️ Błąd:", err.message);
   });
 }
 
