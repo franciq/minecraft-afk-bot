@@ -1,12 +1,12 @@
 {
-  "name": "minecraft-afk-bot",
+  "name": "mc-afk-bot",
   "version": "1.0.0",
   "main": "index.js",
-  "dependencies": {
-    "mineflayer": "^4.3.0",
-    "express": "^4.18.2"
-  },
   "scripts": {
     "start": "node index.js"
+  },
+  "dependencies": {
+    "mineflayer": "^4.14.0",
+    "express": "^4.18.2"
   }
 }
