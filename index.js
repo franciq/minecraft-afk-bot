@@ -29,30 +29,45 @@ function startBot() {
   bot.once("spawn", () => {
     console.log("✅ Bot wszedł na serwer");
 
-    // AUTHME LOGIN
+    // ===== LOGIN AUTHME =====
     setTimeout(() => {
       bot.chat(`/login ${config.password}`);
+      console.log("🔐 Wysłano /login");
     }, config.loginDelay);
 
-    // ================= ANTI AFK =================
-    afkTask = setInterval(() => {
-      bot.setControlState("jump", true);
-      setTimeout(() => bot.setControlState("jump", false), 300);
-    }, config.afkInterval);
+    // ===== START AFK + ADS (PO LOGINIE) =====
+    setTimeout(() => {
+      console.log("🟢 Start anti-AFK i reklam");
 
-    // ================= CHAT ADS =================
-    const ads = [
-      "§6[Kebab EKSTRA BÓL] §eTylko u Maćka §a6 Diaxów!",
+      // ---- ANTI AFK (PEWNY) ----
+      afkTask = setInterval(() => {
+        // obrót głowy
+        bot.look(bot.entity.yaw + Math.PI / 2, bot.entity.pitch, true);
+
+        // krótki ruch
+        bot.setControlState("forward", true);
+        setTimeout(() => bot.setControlState("forward", false), 400);
+
+        // machnięcie ręką
+        bot.swingArm("right");
+      }, config.afkInterval);
+
+      // ---- CHAT ADS ----
+      const ads = [
+        "§6[Kebab EKSTRA BÓL] §eTylko u Maćka §a6 Diaxów!",
       "§c[Kebab Misiany] §ePromka! §b2 Diaxy!",
       "§a[Kebab XL] §eDla głodnych burgermanów §d2 Diaxy!",
       "§b[Mega Kebab] §e+ Sos Gratis §a3 Diaxy!",
       "§e[Kebab Premium] §cLIMITED §f2 Diaxy!"
-    ];
+      ];
 
-    adTask = setInterval(() => {
-      const msg = ads[Math.floor(Math.random() * ads.length)];
-      bot.chat(msg);
-    }, 6 * 60 * 1000); // 6 minut
+      adTask = setInterval(() => {
+        const msg = ads[Math.floor(Math.random() * ads.length)];
+        bot.chat(msg);
+        console.log("📢 Reklama:", msg);
+      }, 6 * 60 * 1000); // 6 minut
+
+    }, config.loginDelay + 3000); // 3s po loginie
   });
 
   // ================= AUTO REGISTER =================
@@ -60,6 +75,7 @@ function startBot() {
     const m = msg.toLowerCase();
     if (m.includes("register")) {
       bot.chat(`/register ${config.password} ${config.password}`);
+      console.log("📝 Wysłano /register");
     }
   });
 
