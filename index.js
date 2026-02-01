@@ -1,6 +1,6 @@
 const mineflayer = require("mineflayer");
 const express = require("express");
-const fs = require("fs");
+const fs = require("fs-extra");
 
 // ================= KEEP ALIVE =================
 const app = express();
@@ -8,12 +8,28 @@ app.get("/", (req, res) => res.send("AFK Bot działa ✅"));
 app.listen(5000, "0.0.0.0");
 
 // ================= LOAD CONFIG =================
-const config = JSON.parse(fs.readFileSync("./config.json"));
+const config = fs.readJsonSync("./config.json");
 
 let bot;
 let afkTask;
 let adTask;
 
+// ===== timer reklam do pliku =====
+const AD_FILE = "./ad_timer.json";
+
+function loadNextAdTime() {
+  if (fs.existsSync(AD_FILE)) {
+    const data = fs.readJsonSync(AD_FILE);
+    return data.nextAdAt;
+  }
+  return Date.now() + config.adInterval;
+}
+
+function saveNextAdTime(time) {
+  fs.writeJsonSync(AD_FILE, { nextAdAt: time });
+}
+
+// ================= BOT START =================
 function startBot() {
   console.log("🚀 Łączenie z serwerem...");
 
@@ -22,7 +38,7 @@ function startBot() {
     port: config.port,
     username: config.username,
     version: config.version,
-    auth: "offline",
+    auth: "offline"
   });
 
   // ================= SPAWN =================
@@ -39,35 +55,42 @@ function startBot() {
     setTimeout(() => {
       console.log("🟢 Start anti-AFK i reklam");
 
-      // ---- ANTI AFK (PEWNY) ----
+      // ---- ANTI AFK ----
       afkTask = setInterval(() => {
-        // obrót głowy
         bot.look(bot.entity.yaw + Math.PI / 2, bot.entity.pitch, true);
-
-        // krótki ruch
         bot.setControlState("forward", true);
         setTimeout(() => bot.setControlState("forward", false), 400);
-
-        // machnięcie ręką
         bot.swingArm("right");
       }, config.afkInterval);
 
       // ---- CHAT ADS ----
       const ads = [
         "§6[Kebab EKSTRA BÓL] §eTylko u Maćka §a6 Diaxów!",
-      "§c[Kebab Misiany] §ePromka! §b2 Diaxy!",
-      "§a[Kebab XL] §eDla głodnych burgermanów §d2 Diaxy!",
-      "§b[Mega Kebab] §e+ Sos Gratis §a3 Diaxy!",
-      "§e[Kebab Premium] §cLIMITED §f2 Diaxy!"
+        "§c[Kebab Misiany] §ePromka! §b2 Diaxy!",
+        "§a[Kebab XL] §eDla głodnych burgermanów §d2 Diaxy!",
+        "§b[Mega Kebab] §e+ Sos Gratis §a3 Diaxy!",
+        "§e[Kebab Premium] §cLIMITED §f2 Diaxy!"
       ];
 
-      adTask = setInterval(() => {
-        const msg = ads[Math.floor(Math.random() * ads.length)];
-        bot.chat(msg);
-        console.log("📢 Reklama:", msg);
-      }, 6 * 60 * 1000); // 6 minut
+      let nextAdAt = loadNextAdTime();
 
-    }, config.loginDelay + 3000); // 3s po loginie
+      function scheduleAd() {
+        const delay = Math.max(0, nextAdAt - Date.now());
+        adTask = setTimeout(() => {
+          const msg = ads[Math.floor(Math.random() * ads.length)];
+          bot.chat(msg);
+          console.log("📢 Reklama:", msg);
+
+          nextAdAt = Date.now() + config.adInterval;
+          saveNextAdTime(nextAdAt);
+
+          scheduleAd();
+        }, delay);
+      }
+
+      scheduleAd();
+
+    }, config.loginDelay + 3000);
   });
 
   // ================= AUTO REGISTER =================
@@ -82,10 +105,8 @@ function startBot() {
   // ================= RECONNECT =================
   bot.on("end", () => {
     console.log(`🔄 Rozłączono – reconnect za ${config.reconnectDelay / 1000}s`);
-
     if (afkTask) clearInterval(afkTask);
-    if (adTask) clearInterval(adTask);
-
+    if (adTask) clearTimeout(adTask);
     setTimeout(startBot, config.reconnectDelay);
   });
 
