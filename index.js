@@ -65,11 +65,11 @@ function startBot() {
 
       // ---- CHAT ADS ----
       const ads = [
-        "§6[Kebab EKSTRA BÓL] §eTylko u Maćka §a6 Diaxów!",
-        "§c[Kebab Misiany] §ePromka! §b2 Diaxy!",
-        "§a[Kebab XL] §eDla głodnych burgermanów §d2 Diaxy!",
-        "§b[Mega Kebab] §e+ Sos Gratis §a3 Diaxy!",
-        "§e[Kebab Premium] §cLIMITED §f2 Diaxy!"
+        "[Kebab EKSTRA BÓL] Tylko u Maćka 6 Diaxów!",
+        "[Kebab Misiany] Promka! 2 Diaxy!",
+        "[Kebab XL] Dla głodnych burgermanów 2 Diaxy!",
+        "[Mega Kebab] + Sos Gratis 3 Diaxy!",
+        "[Kebab Premium] LIMITED 2 Diaxy!"
       ];
 
       let nextAdAt = loadNextAdTime();
