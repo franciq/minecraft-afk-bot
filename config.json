@@ -3,7 +3,7 @@
   "port": 32014,
   "username": "RageMaciek",
   "password": "haslo123",
-  "version": "1.20.6",
+  "version": "1.21.10",
 
   "loginDelay": 4000,
   "reconnectDelay": 15000,
