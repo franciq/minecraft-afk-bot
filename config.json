@@ -1,11 +1,11 @@
 {
-  "host": "01020685134.aternos.me",
-  "port": 19754,
+  "host": "anarchiaspongebob.aternos.me",
+  "port": 32014,
   "username": "RageMaciek",
   "password": "haslo123",
-  "version": "1.21.1",
-  "loginDelay": 6000,
-  "reconnectDelay": 20000,
-  "afkInterval": 2000,
-  "adInterval": 3600
+  "version": "1.20.6",
+
+  "loginDelay": 4000,
+  "reconnectDelay": 15000,
+  "afkInterval": 30000
 }
