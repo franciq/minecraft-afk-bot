@@ -1,11 +1,13 @@
 {
-  "host": "anarchiaponczek.aternos.me",
-  "port": 32014,
-  "username": "RageMaciek",
-  "password": "haslo123",
-  "version": "1.21.10",
-
-  "loginDelay": 4000,
-  "reconnectDelay": 15000,
-  "afkInterval": 30000
+  "name": "mc-afk-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1",
+    "mineflayer": "^4.25.0",
+    "fs-extra": "^11.1.1"
+  }
 }
