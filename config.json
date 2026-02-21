@@ -1,9 +1,9 @@
 {
-  "host": "anarchiaspongebob.aternos.me",
-  "port": 32014,
+  "host": "anarchiakisiel.aternos.me",
+  "port": 27715,
   "username": "RageMaciek",
   "password": "haslo123",
-  "version": "1.20.6",
+  "version": "1.21.1",
 
   "loginDelay": 4000,
   "reconnectDelay": 15000,
